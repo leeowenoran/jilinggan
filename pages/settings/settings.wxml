@@ -1,0 +1,84 @@
+<!--pages/settings/settings.wxml-->
+<view class="page">
+  <!-- 新用户引导横幅 -->
+  <view class="new-user-banner" wx:if="{{isNewUser}}">
+    <view class="banner-icon icon-sparkle-white"></view>
+    <view class="banner-text">
+      <text class="banner-title">完善个人资料</text>
+      <text class="banner-desc">点击头像选择微信头像，点击昵称输入框后选择微信昵称即可</text>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">账号</view>
+
+    <!-- 头像和昵称编辑区（已登录时展示） -->
+    <view class="profile-area" wx:if="{{isLoggedIn}}">
+      <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+        <image wx:if="{{avatarUrl}}" class="avatar-img" src="{{avatarUrl}}" mode="aspectFill" />
+        <view wx:else class="avatar-img avatar-placeholder">
+          <view class="avatar-placeholder-icon icon-person"></view>
+        </view>
+        <view class="avatar-overlay">
+          <view class="avatar-camera icon-camera"></view>
+        </view>
+      </button>
+      <view class="profile-fields">
+        <view class="field-row">
+          <text class="field-label">昵称</text>
+          <input
+            class="field-input"
+            type="nickname"
+            value="{{nickName}}"
+            placeholder="点击选择微信昵称"
+            focus="{{focusNickInput}}"
+            bindinput="onNickNameInput"
+            bindconfirm="onNickNameConfirm"
+          />
+        </view>
+        <view class="field-hint-row">
+          <text class="field-hint" wx:if="{{!nickName && !isEditing}}">设置后可在个人资料中展示</text>
+          <button class="btn-save-profile" wx:if="{{isEditing && nickName}}" bindtap="onSaveProfile">保存资料</button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 未登录时的状态 -->
+    <view class="cell" wx:if="{{!isLoggedIn}}">
+      <text class="cell-label">登录状态</text>
+      <text class="cell-value not-logged-in">未登录</text>
+    </view>
+    <view class="cell" wx:if="{{isLoggedIn}}">
+      <text class="cell-label">登录状态</text>
+      <text class="cell-value logged-in">已登录</text>
+    </view>
+    <button wx:if="{{!isLoggedIn}}" class="btn-login" bindtap="onLogin">微信登录</button>
+    <button wx:if="{{isLoggedIn}}" class="btn-logout" bindtap="onLogout">退出登录</button>
+  </view>
+
+  <!-- 项目管理 -->
+  <view class="section">
+    <view class="section-title">项目管理</view>
+
+    <view class="cell cell-switch">
+      <text class="cell-label">多项目模式</text>
+      <switch
+        checked="{{switchChecked}}"
+        bindchange="onToggleProjectMode"
+        color="#007AFF"
+      />
+    </view>
+
+    <view class="cell-hint-tip" wx:if="{{projectMode === 'multi'}}">
+      <text class="cell-hint-tip-text">在首页长按项目卡片即可重命名或删除项目</text>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">关于</view>
+    <view class="cell">
+      <text class="cell-label">版本</text>
+      <text class="cell-value">v1.0.8</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,16 @@
+<!--components/login-bar/index.wxml-->
+<view class="login-bar" wx:if="{{visible}}">
+  <view class="login-content">
+    <view class="login-icon">
+      <view class="login-icon icon-lock"></view>
+    </view>
+    <view class="login-text">
+      <text class="login-title">登录后同步数据到云端</text>
+      <text class="login-desc">灵感永不丢失，换手机也能恢复</text>
+    </view>
+    <button class="login-btn" bindtap="onLogin">登录</button>
+    <view class="login-close" bindtap="onDismiss">
+      <text class="close-icon">✕</text>
+    </view>
+  </view>
+</view>

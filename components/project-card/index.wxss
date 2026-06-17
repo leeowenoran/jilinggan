@@ -1,0 +1,98 @@
+/* components/project-card/index.wxss - 双列网格卡片 */
+
+.card {
+  width: 100%;
+  height: 260rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.card:active {
+  transform: scale(0.97);
+}
+
+.card-inner {
+  position: relative;
+  padding: 28rpx 24rpx 20rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  height: 100%;
+  box-sizing: border-box;
+  justify-content: flex-start;
+}
+
+/* 右上角统计徽标 */
+.card-count-corner {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  display: flex;
+  align-items: baseline;
+  gap: 2rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  opacity: 0.55;
+  line-height: 1;
+}
+
+.card-count-num {
+  font-size: 26rpx;
+  font-weight: 700;
+  opacity: 1;
+}
+
+.card-count-sep {
+  font-size: 22rpx;
+  opacity: 0.6;
+}
+
+.card-count-total {
+  font-size: 22rpx;
+  font-weight: 400;
+  opacity: 0.6;
+}
+
+.card-star-in-line {
+  font-size: 22rpx;
+  margin-left: 4rpx;
+  opacity: 0.8;
+}
+
+/* 首字母头像 */
+.card-avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8rpx;
+}
+
+.card-avatar-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  line-height: 1;
+}
+
+/* 项目名 */
+.card-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  letter-spacing: -0.3rpx;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 更新时间 */
+.card-time {
+  font-size: 20rpx;
+  margin-top: auto;
+}

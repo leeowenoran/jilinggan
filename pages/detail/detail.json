@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "灵感详情",
+  "usingComponents": {
+    "share-menu": "/components/share-menu/index"
+  }
+}

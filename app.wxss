@@ -1,0 +1,61 @@
+/* app.wxss - 全局样式 & CSS 变量 */
+
+page {
+  /* 颜色系统 */
+  --color-primary: #007AFF;
+  --color-primary-light: #E8F4FD;
+  --color-danger: #FF3B30;
+  --color-success: #34C759;
+  --color-warning: #FF9500;
+
+  --color-text-primary: #1C1C1E;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #8E8E93;
+  --color-text-quaternary: #AEAEB2;
+
+  --color-bg: #F5F5F5;
+  --color-bg-secondary: #F9F9FB;
+  --color-border: #E5E5EA;
+  --color-divider: #F3F4F6;
+
+  /* 阴影 */
+  --shadow-sm: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4rpx 24rpx rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8rpx 40rpx rgba(0, 0, 0, 0.12);
+
+  /* 圆角 */
+  --radius-sm: 12rpx;
+  --radius-md: 16rpx;
+  --radius-lg: 24rpx;
+  --radius-full: 999rpx;
+
+  /* 基础样式 */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif;
+  font-size: 28rpx;
+  color: var(--color-text-primary);
+  background: var(--color-bg);
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 通用按钮重置 */
+button {
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  font-size: inherit;
+  line-height: inherit;
+  border-radius: 0;
+}
+
+button::after {
+  border: none;
+}
+
+/* 安全区适配 */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}

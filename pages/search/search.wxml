@@ -1,0 +1,75 @@
+<!--pages/search/search.wxml-->
+<view class="page">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input-wrapper">
+      <view class="search-icon icon-search"></view>
+      <input
+        class="search-input"
+        value="{{keyword}}"
+        placeholder="搜索灵感内容..."
+        placeholder-style="color: #9CA3AF"
+        bindinput="onInput"
+        bindconfirm="onConfirm"
+        focus="{{true}}"
+        confirm-type="search"
+      />
+      <view class="clear-btn icon-close" wx:if="{{showClear}}" bindtap="onClear"></view>
+    </view>
+  </view>
+
+  <!-- 标签筛选区 -->
+  <view class="tags-section" wx:if="{{allTags.length > 0}}">
+    <scroll-view scroll-x class="tags-scroll">
+      <view class="tags-wrapper">
+        <text
+          wx:for="{{allTags}}"
+          wx:key="*this"
+          class="filter-tag {{activeTag === item ? 'active' : ''}}"
+          data-tag="{{item}}"
+          bindtap="onTapTag"
+        >#{{item}}</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 搜索结果 -->
+  <view class="results-section" wx:if="{{results.length > 0}}">
+    <view class="results-header">
+      <text class="results-count">找到 {{results.length}} 条结果</text>
+    </view>
+    <view class="result-list">
+      <view
+        wx:for="{{results}}"
+        wx:key="localId"
+        class="result-card"
+        data-localid="{{item.localId}}"
+        bindtap="onTapResult"
+      >
+        <text class="result-content">{{item.content}}</text>
+        <view class="result-tags" wx:if="{{item._projectName || item.tags.length > 0}}">
+          <text class="result-tag result-tag-project" wx:if="{{item._projectName}}">{{item._projectName}}</text>
+          <text class="result-tag" wx:for="{{item.tags}}" wx:key="*this" wx:for-item="tag">#{{tag}}</text>
+        </view>
+        <view class="result-footer">
+          <text class="result-date">{{item.dateTag}}</text>
+          <text class="result-time">{{item.timeSlot}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索空状态 -->
+  <view class="search-empty" wx:if="{{keyword && results.length === 0}}">
+    <view class="search-empty-icon icon-search"></view>
+    <text class="empty-text">没有找到相关灵感</text>
+    <text class="empty-hint">试试其他关键词</text>
+  </view>
+
+  <!-- 初始状态 -->
+  <view class="search-init" wx:if="{{!keyword && results.length === 0}}">
+    <view class="search-init-icon icon-search"></view>
+    <text class="init-text">输入关键词搜索灵感</text>
+    <text class="init-hint">支持搜索正文、补充内容和标签</text>
+  </view>
+</view>

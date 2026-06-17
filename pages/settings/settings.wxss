@@ -1,0 +1,251 @@
+/* pages/settings/settings.wxss */
+.page {
+  min-height: 100vh;
+  background: #F5F5F5;
+  padding: 32rpx;
+  box-sizing: border-box;
+}
+
+/* 新用户引导横幅 */
+.new-user-banner {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  background: linear-gradient(135deg, #10B981, #059669);
+  border-radius: 24rpx;
+  padding: 28rpx 32rpx;
+  margin-bottom: 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(16, 185, 129, 0.25);
+}
+.banner-icon {
+  width: 44rpx;
+  height: 44rpx;
+  flex-shrink: 0;
+  background-color: #FFFFFF;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+.banner-text {
+  flex: 1;
+  min-width: 0;
+}
+.banner-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 6rpx;
+}
+.banner-desc {
+  display: block;
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.5;
+}
+.section {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 8rpx 32rpx;
+  margin-bottom: 28rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+.section-title {
+  font-size: 26rpx;
+  color: #9CA3AF;
+  font-weight: 600;
+  padding: 24rpx 0 12rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+  margin-bottom: 8rpx;
+}
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+.cell:last-child {
+  border-bottom: none;
+}
+.cell-label {
+  font-size: 30rpx;
+  color: #111827;
+}
+.cell-value {
+  font-size: 28rpx;
+  color: #6B7280;
+}
+.cell-value.logged-in {
+  color: #10B981;
+}
+.cell-value.not-logged-in {
+  color: #EF4444;
+}
+/* 头像昵称编辑区 */
+.profile-area {
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+.avatar-btn {
+  position: relative;
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.avatar-btn::after {
+  border: none;
+}
+.avatar-img {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: #E5E7EB;
+}
+.avatar-img.avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.avatar-placeholder-icon {
+  width: 56rpx;
+  height: 56rpx;
+  background-color: #9CA3AF;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+.avatar-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40rpx;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 0 60rpx 60rpx;
+}
+.avatar-camera {
+  width: 28rpx;
+  height: 28rpx;
+  background-color: #FFFFFF;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+.profile-fields {
+  flex: 1;
+  min-width: 0;
+}
+.field-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 12rpx 0;
+}
+.field-label {
+  font-size: 28rpx;
+  color: #6B7280;
+  flex-shrink: 0;
+}
+.field-input {
+  flex: 1;
+  font-size: 30rpx;
+  color: #111827;
+  background: #F9FAFB;
+  border-radius: 12rpx;
+  padding: 14rpx 20rpx;
+  min-width: 0;
+}
+.field-hint-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8rpx 0 4rpx;
+}
+.field-hint {
+  font-size: 22rpx;
+  color: #9CA3AF;
+  line-height: 1.5;
+}
+.btn-save-profile {
+  background: #10B981;
+  color: #FFFFFF;
+  font-size: 24rpx;
+  font-weight: 600;
+  border-radius: 24rpx;
+  padding: 8rpx 28rpx;
+  border: none;
+  line-height: 1.5;
+  margin: 0;
+  flex-shrink: 0;
+}
+.btn-save-profile::after { border: none; }
+
+.btn-login {
+  background: #10B981;
+  color: #FFFFFF;
+  font-size: 28rpx;
+  font-weight: 600;
+  border-radius: 32rpx;
+  margin: 24rpx 0;
+  border: none;
+  padding: 16rpx 0;
+  line-height: 1.5;
+}
+.btn-login::after { border: none; }
+.btn-logout {
+  background: #FEE2E2;
+  color: #EF4444;
+  font-size: 28rpx;
+  font-weight: 600;
+  border-radius: 32rpx;
+  margin: 24rpx 0;
+  border: none;
+  padding: 16rpx 0;
+  line-height: 1.5;
+}
+.btn-logout::after { border: none; }
+.btn-clear {
+  background: #F3F4F6;
+  color: #EF4444;
+  font-size: 28rpx;
+  border-radius: 32rpx;
+  margin: 24rpx 0;
+  border: none;
+  padding: 16rpx 0;
+  line-height: 1.5;
+}
+.btn-clear::after { border: none; }
+
+/* ===== SVG 图标定义 ===== */
+.icon-sparkle-white {
+  mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%202l2%204%204.5.5-3%203.5%201%204.5-4.5-2-4.5%202%201-4.5-3-3.5%204.5-.5z%22%2F%3E%3C%2Fsvg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%202l2%204%204.5.5-3%203.5%201%204.5-4.5-2-4.5%202%201-4.5-3-3.5%204.5-.5z%22%2F%3E%3C%2Fsvg%3E");
+}
+.icon-person {
+  mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%228%22%20r%3D%224%22%2F%3E%3Cpath%20d%3D%22M4%2021v-1a6%206%200%200%201%206-6h4a6%206%200%200%201%206%206v1%22%2F%3E%3C%2Fsvg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%228%22%20r%3D%224%22%2F%3E%3Cpath%20d%3D%22M4%2021v-1a6%206%200%200%201%206-6h4a6%206%200%200%201%206%206v1%22%2F%3E%3C%2Fsvg%3E");
+}
+.icon-camera {
+  mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%221%22%20y%3D%226%22%20width%3D%2222%22%20height%3D%2216%22%20rx%3D%223%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2214%22%20r%3D%224%22%2F%3E%3C%2Fsvg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%221%22%20y%3D%226%22%20width%3D%2222%22%20height%3D%2216%22%20rx%3D%223%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2214%22%20r%3D%224%22%2F%3E%3C%2Fsvg%3E");
+}

@@ -1,0 +1,74 @@
+<!--components/inspiration-card/index.wxml-->
+<view
+  class="card {{item.absorbed ? 'absorbed' : ''}}"
+  bindtap="onTap"
+  bindlongpress="onLongPress"
+  bindtouchstart="onTouchStart"
+  bindtouchmove="onTouchMove"
+  bindtouchend="onTouchEnd"
+>
+  <!-- 右滑吸收背景（左侧绿色） -->
+  <view class="slide-bg-absorb {{absorbSlideOpen ? 'open' : ''}}" catchtap="onMarkAbsorbed">
+    <text class="slide-text">{{item.absorbed ? '取消' : '吸收'}}</text>
+  </view>
+
+  <!-- 左滑删除背景（右侧红色） -->
+  <view class="slide-bg-delete {{slideOpen ? 'open' : ''}}" catchtap="onDelete">
+    <text class="slide-text">删除</text>
+  </view>
+
+  <!-- 卡片内容 -->
+  <view class="card-content {{slideOpen ? 'slide-left' : ''}} {{absorbSlideOpen ? 'slide-right' : ''}} {{selectMode ? 'select-mode' : ''}}">
+    <!-- 选择模式勾选框 -->
+    <view wx:if="{{selectMode}}" class="card-check {{selected ? 'checked' : ''}}">
+      <text wx:if="{{selected}}" class="card-check-mark">✓</text>
+    </view>
+
+    <!-- 已吸收标记（右上角小勾） -->
+    <view wx:if="{{item.absorbed && !selectMode}}" class="absorbed-badge">
+      <text class="absorbed-badge-mark">✓</text>
+    </view>
+
+    <!-- 正文 -->
+    <text class="content" wx:if="{{item.content}}">{{item.content}}</text>
+
+    <!-- 图片缩略图（全部展示，多行网格，每行最多 3 张） -->
+    <view wx:if="{{item.images && item.images.length > 0}}" class="card-images">
+      <view
+        wx:for="{{item.images}}"
+        wx:key="*this"
+        wx:for-index="idx"
+        class="card-image-wrap"
+        catchtap="onPreviewImage"
+        data-index="{{idx}}"
+      >
+        <image class="card-image" src="{{item}}" mode="aspectFill" />
+      </view>
+    </view>
+
+    <!-- 标签区 -->
+    <view class="tags" wx:if="{{item._projectName || item.tags.length > 0 || item.timeSlot}}">
+      <text class="tag tag-project" wx:if="{{item._projectName}}">{{item._projectName}}</text>
+      <text class="tag tag-default" wx:for="{{item.tags}}" wx:key="*this" wx:for-item="tag">{{tag}}</text>
+      <text class="tag tag-time" wx:if="{{item.timeSlot}}">{{item.timeSlot}}</text>
+      <text class="tag tag-date" wx:if="{{item.dateTag}}">{{item.dateTag}}</text>
+    </view>
+
+    <!-- 底部信息 -->
+    <view class="footer">
+      <text class="time">{{displayTime}}</text>
+      <view class="footer-right">
+        <view wx:if="{{item.source === 'voice'}}" class="source-label">
+          <view class="source-icon icon-mic"></view>
+          <text>语音</text>
+        </view>
+        <text class="supplement-text" wx:if="{{item.supplement}}">{{item.supplement}}</text>
+        <!-- 位置信息 -->
+        <view wx:if="{{item.location}}" class="footer-location">
+          <view class="location-icon icon-location"></view>
+          <text class="location-text">{{item.location.district || item.location.city || '已记录位置'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "记灵感",
+  "usingComponents": {
+    "inspiration-card": "/components/inspiration-card/index",
+    "project-card": "/components/project-card/index",
+    "login-bar": "/components/login-bar/index"
+  }
+}

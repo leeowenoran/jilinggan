@@ -1,0 +1,27 @@
+<!--components/project-card/index.wxml-->
+<view
+  class="card"
+  style="background-color: {{project.color.bg}}"
+  bindtap="onTap"
+  bindlongpress="onLongPress"
+>
+  <view class="card-inner">
+    <!-- 右上角统计徽标 -->
+    <view class="card-count-corner" wx:if="{{project.unabsorbedCount > 0 || project.absorbedCount > 0}}" style="color:{{project.color.accent}};">
+      <text class="card-count-num">{{project.unabsorbedCount}}</text>
+      <text class="card-count-sep">/</text>
+      <text class="card-count-total">{{project.unabsorbedCount + project.absorbedCount}}</text>
+    </view>
+
+    <!-- 首字母头像 -->
+    <view class="card-avatar" style="background-color: {{project.color.accent}}">
+      <text class="card-avatar-text">{{(project.name && project.name[0]) || '·'}}</text>
+    </view>
+
+    <!-- 项目名 -->
+    <text class="card-name" style="color: {{project.color.text}}">{{project.name}}</text>
+
+    <!-- 更新时间 -->
+    <text class="card-time" style="color: {{project.color.accent}}; opacity: 0.45;">{{displayTime}}</text>
+  </view>
+</view>

@@ -1,0 +1,243 @@
+/* pages/detail/detail.wxss */
+.page {
+  min-height: 100vh;
+  background: #F5F5F5;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 导航栏 */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 32rpx;
+  background: #FFFFFF;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.nav-back {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.nav-back-icon {
+  font-size: 40rpx;
+  color: #007AFF;
+  font-weight: 300;
+}
+.nav-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1C1C1E;
+}
+.nav-actions {
+  display: flex;
+  gap: 16rpx;
+}
+.nav-btn {
+  padding: 12rpx 20rpx;
+  border-radius: var(--radius-full);
+  background: #F3F4F6;
+  transition: all 0.15s;
+}
+.nav-btn:active {
+  background: #E5E7EB;
+}
+.nav-btn.absorbed {
+  background: #E8F8EE;
+}
+.nav-btn-text {
+  font-size: 26rpx;
+  color: #1C1C1E;
+  font-weight: 500;
+}
+.nav-btn.absorbed .nav-btn-text {
+  color: #34C759;
+}
+.nav-btn-icon {
+  font-size: 36rpx;
+  color: #6B7280;
+  line-height: 1;
+}
+
+/* 内容区域 */
+.content-area {
+  padding: 32rpx;
+}
+
+/* 详情内容 */
+.detail-content {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 36rpx 32rpx;
+  box-shadow: var(--shadow-sm);
+}
+
+.content-text {
+  font-size: 34rpx;
+  color: var(--color-text-primary);
+  line-height: 1.75;
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+.content-empty {
+  font-size: 30rpx;
+  color: var(--color-text-tertiary);
+  font-style: italic;
+}
+
+/* 图片网格 */
+.image-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 24rpx;
+}
+.image-wrap {
+  width: calc((100% - 24rpx) / 3);
+  aspect-ratio: 1;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+.detail-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 补充说明 */
+.supplement-section {
+  margin-top: 28rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx solid var(--color-divider);
+}
+.supplement-label {
+  font-size: 24rpx;
+  color: var(--color-text-tertiary);
+  margin-bottom: 12rpx;
+  display: block;
+}
+.supplement-text {
+  font-size: 30rpx;
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
+/* 标签 */
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 24rpx;
+}
+.tag {
+  display: inline-block;
+  padding: 6rpx 16rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+  border-radius: var(--radius-full);
+}
+.tag-project {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+.tag-normal {
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+}
+
+/* 元信息 */
+.meta-row {
+  margin-top: 24rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid var(--color-divider);
+  display: flex;
+  gap: 12rpx;
+}
+.meta-text {
+  font-size: 24rpx;
+  color: var(--color-text-quaternary);
+}
+
+/* 操作栏 */
+.action-bar {
+  display: flex;
+  justify-content: space-around;
+  padding: 32rpx 0;
+  margin-top: 24rpx;
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  box-shadow: var(--shadow-sm);
+}
+.action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 22rpx;
+  color: var(--color-text-secondary);
+  background: none;
+  padding: 12rpx;
+}
+.action-btn:active {
+  opacity: 0.6;
+}
+.action-btn.danger {
+  color: var(--color-danger);
+}
+.action-icon {
+  font-size: 40rpx;
+  line-height: 1;
+}
+
+/* 编辑模式 */
+.edit-section {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: var(--shadow-sm);
+}
+.edit-content {
+  width: 100%;
+  min-height: 160rpx;
+  font-size: 34rpx;
+  line-height: 1.75;
+}
+.edit-divider {
+  height: 1rpx;
+  background: var(--color-divider);
+  margin: 28rpx 0;
+}
+.edit-supplement {
+  width: 100%;
+  min-height: 120rpx;
+  font-size: 30rpx;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 24rpx;
+  margin-top: 32rpx;
+}
+.btn-cancel {
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+  color: var(--color-text-secondary);
+  background: #F3F4F6;
+  border-radius: 16rpx;
+}
+.btn-save {
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+  color: #FFFFFF;
+  background: #007AFF;
+  border-radius: 16rpx;
+}

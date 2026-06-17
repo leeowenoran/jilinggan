@@ -1,0 +1,9 @@
+{
+  "name": "getWxacode",
+  "version": "1.0.0",
+  "description": "生成小程序二维码（需要在云开发控制台开启 wxacode.getUnlimited 权限）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

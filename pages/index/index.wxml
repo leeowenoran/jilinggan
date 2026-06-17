@@ -1,0 +1,342 @@
+<!--pages/index/index.wxml-->
+
+<wxs module="utils">
+  function includes(arr, val) {
+    if (!arr) return false
+    for (var i = 0; i < arr.length; i++) {
+      if (arr[i] === val) return true
+    }
+    return false
+  }
+  module.exports = { includes: includes }
+</wxs>
+
+<!-- ================================================================
+     多项目模式 — 项目列表首页（无 currentProjectId 时）
+     ================================================================ -->
+<block wx:if="{{isMultiMode && !currentProjectId}}">
+  <view class="page">
+    <view class="header">
+      <view class="header-row">
+        <view class="header-left">
+          <text class="title">记灵感</text>
+          <text class="subtitle">随时记录突发灵感</text>
+        </view>
+        <view class="header-actions">
+          <view class="header-btn" bindtap="onGoSearch">
+            <view class="header-btn-icon icon-search"></view>
+          </view>
+          <view class="header-btn" bindtap="onGoSettings">
+            <view class="header-btn-icon icon-settings"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 项目卡片列表 -->
+    <view class="project-list">
+      <!-- 标题栏 + 排序按钮 + 新建按钮 -->
+      <view class="project-header">
+        <view class="project-header-left">
+          <text class="section-title">我的项目（{{projects.length}}）</text>
+        </view>
+        <view class="project-header-center" wx:if="{{totalCount > 0}}">
+          <text class="header-stats-num">{{unabsorbedCount}}</text>
+          <text class="header-stats-label">未吸收</text>
+          <text class="header-stats-sep">/</text>
+          <text class="header-stats-total">{{totalCount}}</text>
+        </view>
+        <view class="project-header-actions">
+          <view class="sort-btn" wx:if="{{!sortMode && projects.length > 1}}" bindtap="onToggleSortMode">
+            <text class="sort-btn-text">排序</text>
+          </view>
+          <view wx:if="{{sortMode}}" class="sort-btn active" bindtap="onToggleSortMode">
+            <text class="sort-btn-text">完成</text>
+          </view>
+          <view class="create-btn" bindtap="onCreateProject">
+            <text class="create-btn-text">+</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 项目网格（非排序模式） -->
+      <view class="project-grid" wx:if="{{!sortMode}}">
+        <view
+          wx:for="{{projects}}"
+          wx:key="_id"
+          class="project-grid-item"
+        >
+          <project-card
+            project="{{item}}"
+            bind:select="onTapProject"
+            bind:longpress="onLongPressProject"
+          />
+        </view>
+        <!-- 未分类入口（有未分类灵感时显示，排序模式下隐藏） -->
+        <view wx:if="{{!sortMode && unclassifiedCount > 0}}" class="project-grid-item" bindtap="onTapUnclassified">
+          <view class="unclassified-card">
+            <view class="unclassified-inner">
+              <!-- 右上角统计徽标 -->
+              <view class="unclassified-count-corner">
+                <text class="unclassified-count-num">{{unclassifiedCount - unclassifiedAbsorbed}}</text>
+                <text class="unclassified-count-sep">/</text>
+                <text class="unclassified-count-total">{{unclassifiedCount}}</text>
+              </view>
+              <view class="unclassified-icon">
+                <text class="unclassified-icon-text">#</text>
+              </view>
+              <text class="unclassified-name">未分类</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 排序模式：可拖拽列表 -->
+      <movable-area
+        wx:if="{{sortMode}}"
+        style="height:{{sortAreaHeight}}px; width:100%; display:block; box-sizing:border-box;"
+      >
+        <movable-view
+          wx:for="{{sortProjects}}"
+          wx:key="_id"
+          direction="vertical"
+          y="{{item._sortY}}"
+          x="0"
+          width="100%"
+          style="width:100%;"
+          damping="{{40}}"
+          bindchange="onSortItemChange"
+          bindtouchend="onSortTouchEnd"
+          data-index="{{index}}"
+          data-id="{{item._id}}"
+        >
+          <view class="sort-card {{item._highlight ? 'sort-card-highlight' : ''}}">
+            <view class="sort-card-inner">
+              <view class="sort-handle">≡</view>
+              <view class="sort-card-avatar" style="background:{{item.color.accent}}">
+                <text class="sort-card-avatar-text">{{item.name[0]}}</text>
+              </view>
+              <view class="sort-card-info">
+                <text class="sort-card-name">{{item.name}}</text>
+                <view class="sort-card-meta">
+                  <view class="sort-count-badge" wx:if="{{item.unabsorbedCount > 0 || item.absorbedCount > 0}}">
+                    <text class="sort-count-num">{{item.unabsorbedCount}}</text>
+                    <text class="sort-count-sep">/</text>
+                    <text class="sort-count-total">{{item.unabsorbedCount + item.absorbedCount}}</text>
+                  </view>
+                  <text class="sort-count-empty" wx:else>0/0</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </movable-view>
+      </movable-area>
+
+    </view>
+
+    <view class="empty" wx:if="{{projects.length === 0 && unclassifiedCount === 0}}">
+      <view class="empty-icon icon-sparkle"></view>
+      <text class="empty-text">还没有项目，点击右上角 + 创建</text>
+    </view>
+
+    <!-- 登录提示条 -->
+    <login-bar wx:if="{{showLoginBar}}" bind:login="onLogin" bind:dismiss="onDismissLoginBar" />
+    <view class="get-userinfo-overlay" wx:if="{{showGetUserInfo}}" catchtap="onDismissGetUserInfo">
+      <view class="get-userinfo-card" catchtap="">
+        <text class="get-userinfo-title">完善个人资料</text>
+        <text class="get-userinfo-desc">授权获取你的微信头像和昵称，让你的灵感更有温度</text>
+        <button class="get-userinfo-btn" open-type="getUserInfo" bindgetuserinfo="onGetUserInfo">使用微信头像和昵称</button>
+        <text class="get-userinfo-skip" catchtap="goToSettingsForProfile">手动设置</text>
+      </view>
+    </view>
+  </view>
+</block>
+
+<!-- ================================================================
+     灵感流页面（单项目模式 或 多项目模式中的某个项目）
+     ================================================================ -->
+<block wx:if="{{!isMultiMode || currentProjectId}}">
+<view class="page">
+  <view class="header">
+    <!-- 多项目模式下：显示返回按钮和项目名 / 选择模式条 -->
+    <view wx:if="{{isMultiMode && currentProjectId}}" class="project-nav-bar">
+      <block wx:if="{{selectMode}}">
+        <view class="back-btn" bindtap="onExitSelectMode">
+          <text class="back-label">取消</text>
+        </view>
+        <text class="project-nav-title">已选 {{selectedIds.length}} 项</text>
+        <view style="width: 120rpx;"></view>
+      </block>
+      <block wx:else>
+        <view class="back-btn" bindtap="onBackToProjects">
+          <text class="back-arrow">‹</text>
+          <text class="back-label">项目</text>
+        </view>
+        <text class="project-nav-title">{{currentProjectName}}</text>
+        <view class="header-actions">
+          <view class="header-btn" bindtap="onGoSearch">
+            <view class="header-btn-icon icon-search"></view>
+          </view>
+          <view class="header-btn" bindtap="onGoSettings">
+            <view class="header-btn-icon icon-settings"></view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- 单项目模式：原始 header / 选择模式条 -->
+    <block wx:if="{{!isMultiMode}}">
+    <block wx:if="{{selectMode}}">
+      <view class="project-nav-bar">
+        <view class="back-btn" bindtap="onExitSelectMode">
+          <text class="back-label">取消</text>
+        </view>
+        <text class="project-nav-title">已选 {{selectedIds.length}} 项</text>
+        <view style="width: 120rpx;"></view>
+      </view>
+    </block>
+    <block wx:else>
+    <view class="header-row">
+      <view class="header-left">
+        <text class="title">记灵感</text>
+        <text class="subtitle">随时记录突发灵感</text>
+      </view>
+      <view class="header-actions">
+        <view class="header-btn" bindtap="onGoSearch">
+          <view class="header-btn-icon icon-search"></view>
+        </view>
+        <view class="header-btn" bindtap="onGoSettings">
+          <view class="header-btn-icon icon-settings"></view>
+        </view>
+      </view>
+    </view>
+    </block>
+    </block>
+
+  </view>
+
+  <!-- 输入区（选择模式下隐藏）-->
+  <view class="input-area" wx:if="{{!selectMode}}">
+    <view class="input-row">
+      <view class="input-tool-btn" bindtap="onPickImages">
+        <view class="input-tool-icon icon-photo"></view>
+        <text wx:if="{{pendingImages.length > 0}}" class="input-tool-badge">{{pendingImages.length}}</text>
+      </view>
+      <textarea
+        class="input-box"
+        placeholder="捕捉你的灵感一现..."
+        placeholder-style="color: #9CA3AF"
+        value="{{inputValue}}"
+        bindinput="onInput"
+        bindconfirm="onSubmit"
+        bindpaste="onPaste"
+        auto-height
+        maxlength="5000"
+        show-confirm-bar="{{true}}"
+      />
+      <view class="submit-btn {{(inputValue.length > 0 || pendingImages.length > 0) ? 'active' : ''}}" catchtap="onSubmit">
+        <text class="submit-text">捕捉</text>
+      </view>
+    </view>
+
+    <scroll-view wx:if="{{pendingImages.length > 0}}" scroll-x class="image-preview-scroll">
+      <view class="image-preview-list">
+        <view class="image-preview-item" wx:for="{{pendingImages}}" wx:key="tempFilePath" wx:for-item="img" wx:for-index="idx">
+          <image class="preview-thumb" src="{{img.tempFilePath}}" mode="aspectFill" bindtap="onPreviewPendingImage" data-index="{{idx}}" />
+          <view class="preview-remove" catchtap="onRemoveImage" data-index="{{idx}}"><text class="preview-remove-text">×</text></view>
+        </view>
+        <view wx:if="{{pendingImages.length < 9}}" class="image-add-more" bindtap="onPickImages">
+          <text class="image-add-more-icon">+</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <view class="input-footer" wx:if="{{inputValue.length > 0}}">
+      <text class="char-count {{inputValue.length > 4500 ? 'warn' : ''}}">{{inputValue.length}}/5000</text>
+    </view>
+  </view>
+
+  <!-- 登录提示条 -->
+  <login-bar wx:if="{{showLoginBar}}" bind:login="onLogin" bind:dismiss="onDismissLoginBar" />
+
+  <!-- 微信资料授权弹层 -->
+  <view class="get-userinfo-overlay" wx:if="{{showGetUserInfo}}" catchtap="onDismissGetUserInfo">
+    <view class="get-userinfo-card" catchtap="">
+      <text class="get-userinfo-title">完善个人资料</text>
+      <text class="get-userinfo-desc">授权获取你的微信头像和昵称，让你的灵感更有温度</text>
+      <button class="get-userinfo-btn" open-type="getUserInfo" bindgetuserinfo="onGetUserInfo">使用微信头像和昵称</button>
+      <text class="get-userinfo-skip" catchtap="goToSettingsForProfile">手动设置</text>
+    </view>
+  </view>
+
+  <!-- 灵感时间线 -->
+  <view class="inspiration-header" wx:if="{{totalCount > 0 || absorbedCount > 0}}">
+    <view class="inspiration-header-left">
+      <text class="section-title">灵感时间线</text>
+      <view class="count-badge" wx:if="{{totalCount > 0}}">
+        <text class="count-badge-unabsorbed">{{unabsorbedCount}}</text>
+        <text class="count-badge-sep">/</text>
+        <text class="count-badge-total">{{totalCount}}</text>
+      </view>
+    </view>
+    <view class="inspiration-header-actions">
+      <!-- 已吸收筛选开关 -->
+      <view wx:if="{{absorbedCount > 0 && !selectMode}}" class="filter-btn {{showAbsorbed ? 'active' : ''}}" bindtap="onToggleShowAbsorbed">
+        <text class="filter-btn-text">{{showAbsorbed ? '隐藏已吸收' : '显示已吸收'}}</text>
+      </view>
+      <view wx:if="{{!selectMode}}" class="manage-btn" bindtap="onEnterSelectMode">
+        <text class="manage-btn-text">管理</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="timeline-list" style="padding-bottom: {{selectMode ? '140rpx' : '0'}};">
+    <view class="timeline-group" wx:for="{{groups}}" wx:key="date" wx:for-item="group">
+      <view class="timeline-date-row">
+        <view class="timeline-dot"></view>
+        <text class="timeline-date-label">{{group.dateLabel}}</text>
+      </view>
+      <view class="timeline-items">
+        <inspiration-card
+          wx:for="{{group.items}}"
+          wx:key="localId"
+          item="{{item}}"
+          selectMode="{{selectMode}}"
+          selected="{{utils.includes(selectedIds, item.localId)}}"
+          bind:share="onShareInspiration"
+          bind:delete="onDeleteInspiration"
+          bind:absorb="onMarkAbsorbed"
+          bind:tap="onTapInspiration"
+          bind:select="onToggleSelect"
+        />
+      </view>
+    </view>
+  </view>
+
+  <!-- 选择模式底部操作栏 -->
+  <view wx:if="{{selectMode}}" class="select-action-bar">
+    <view class="select-action-inner">
+      <view class="select-action-info">
+        <text class="select-action-count">已选 {{selectedIds.length}} 条灵感</text>
+      </view>
+      <view class="select-action-buttons">
+        <view class="select-action-btn {{selectedIds.length > 0 ? 'active' : ''}}" bindtap="onBatchMarkAbsorbed">
+          <text class="select-action-btn-text">标记吸收</text>
+        </view>
+        <view class="select-action-btn {{selectedIds.length > 0 ? 'active' : ''}}" bindtap="onConvertToProject">
+          <text class="select-action-btn-text">转为项目</text>
+        </view>
+        <view class="select-action-btn danger {{selectedIds.length > 0 ? 'active' : ''}}" bindtap="onBatchDelete">
+          <text class="select-action-btn-text">批量删除</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{totalCount === 0 && !loading}}">
+    <view class="empty-icon icon-sparkle"></view>
+    <text class="empty-text">还没有灵感，开始记录吧</text>
+  </view>
+
+</view>
+</block>
