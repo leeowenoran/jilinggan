@@ -2,7 +2,16 @@
   "description": "记灵感 - 随时记录突发灵感",
   "cloudfunctionRoot": "cloudfunctions/",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "type": "folder",
+        "value": "cloudfunctions"
+      },
+      {
+        "type": "folder",
+        "value": "minitest"
+      }
+    ],
     "include": []
   },
   "setting": {
@@ -49,8 +58,8 @@
   },
   "compileType": "miniprogram",
   "libVersion": "3.3.4",
-  "appid": "wxafbb0f9930281f02",
-  "projectname": "linguang",
+  "appid": "wxa5875b85c1ee755d",
+  "projectname": "jilinggan",
   "condition": {},
   "editorSetting": {
     "tabIndent": "insertSpaces",
@@ -59,6 +68,5 @@
   "simulatorPluginLibVersion": {
     "wxext14566970e7e9f62": "2.27.3"
   },
-  "projectArchitecture": "multiPlatform",
-  "testRoot": "minitest/"
+  "projectArchitecture": "multiPlatform"
 }
