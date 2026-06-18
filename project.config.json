@@ -4,12 +4,60 @@
   "packOptions": {
     "ignore": [
       {
-        "type": "folder",
-        "value": "cloudfunctions"
+        "type": "file",
+        "value": "cloudfunctions/checkText/index.js"
       },
       {
-        "type": "folder",
-        "value": "minitest"
+        "type": "file",
+        "value": "cloudfunctions/getWxacode/index.js"
+      },
+      {
+        "type": "file",
+        "value": "cloudfunctions/inspirationCreate/index.js"
+      },
+      {
+        "type": "file",
+        "value": "cloudfunctions/inspirationDelete/index.js"
+      },
+      {
+        "type": "file",
+        "value": "cloudfunctions/inspirationDetail/index.js"
+      },
+      {
+        "type": "file",
+        "value": "cloudfunctions/inspirationList/index.js"
+      },
+      {
+        "type": "file",
+        "value": "cloudfunctions/inspirationSearch/index.js"
+      },
+      {
+        "type": "file",
+        "value": "cloudfunctions/inspirationSupplement/index.js"
+      },
+      {
+        "type": "file",
+        "value": "cloudfunctions/inspirationTags/index.js"
+      },
+      {
+        "type": "file",
+        "value": "cloudfunctions/projectManage/index.js"
+      },
+      {
+        "type": "file",
+        "value": "cloudfunctions/syncDownload/index.js"
+      },
+      {
+        "type": "file",
+        "value": "cloudfunctions/syncUpload/index.js"
+      },
+      {
+        "type": "file",
+        "value": "cloudfunctions/userLogin/index.js"
+      },
+      {
+        "type": "file",
+        "value": "cloudfunctions/userUpdateProfile/index.js"
       }
     ],
     "include": []

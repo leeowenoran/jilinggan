@@ -1,6 +1,7 @@
 {
   "libVersion": "3.3.4",
   "projectname": "jilinggan",
+  "cloudfunctionRoot": "cloudfunctions/",
   "condition": {},
   "setting": {
     "urlCheck": true,
