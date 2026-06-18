@@ -838,11 +838,13 @@
   padding: 8rpx 4rpx;
 }
 
-.back-arrow {
-  font-size: 44rpx;
-  color: #007AFF;
-  font-weight: 300;
-  line-height: 1;
+.chevron-icon {
+  width: 20rpx;
+  height: 20rpx;
+  border-left: 4rpx solid #007AFF;
+  border-bottom: 4rpx solid #007AFF;
+  transform: rotate(45deg);
+  margin-right: 8rpx;
 }
 
 .back-label {

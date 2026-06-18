@@ -55,10 +55,24 @@ function updateProfile(data) {
       resolve({ success: true, localOnly: true })
       return
     }
+
+    let settled = false
+    const done = (result) => {
+      if (settled) return
+      settled = true
+      resolve(result)
+    }
+
+    // 超时保护：10 秒后自动返回失败，防止 loading 永远不消失
+    const timer = setTimeout(() => {
+      done({ success: false, error: '请求超时，请稍后重试' })
+    }, 10000)
+
     wx.cloud.callFunction({
       name: 'userUpdateProfile',
       data,
       success: (res) => {
+        clearTimeout(timer)
         if (res && res.result && res.result.code === 0) {
           const userInfo = storage.getUserInfo()
           if (userInfo) {
@@ -67,13 +81,14 @@ function updateProfile(data) {
             const app = getApp()
             app.globalData.userInfo = userInfo
           }
-          resolve({ success: true })
+          done({ success: true })
         } else {
-          resolve({ success: false, error: (res.result && res.result.message) || '更新失败' })
+          done({ success: false, error: (res.result && res.result.message) || '更新失败' })
         }
       },
       fail: (err) => {
-        resolve({ success: false, error: err.errMsg || '调用失败' })
+        clearTimeout(timer)
+        done({ success: false, error: err.errMsg || '调用失败' })
       }
     })
   })

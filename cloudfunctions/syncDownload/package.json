@@ -1,5 +1,9 @@
 {
   "name": "syncDownload",
   "version": "1.0.0",
-  "description": "灵感同步下载云函数"
+  "description": "灵感同步下载云函数",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
 }

@@ -231,25 +231,25 @@ Page({
   onTapProject(e) {
     const project = e.detail.project
     if (project._id === '__unclassified__') {
-      wx.reLaunch({
+      wx.navigateTo({
         url: '/pages/index/index?projectId=__unclassified__&projectName=' + encodeURIComponent('未分类')
       })
       return
     }
-    wx.reLaunch({
+    wx.navigateTo({
       url: '/pages/index/index?projectId=' + project._id + '&projectName=' + encodeURIComponent(project.name)
     })
   },
 
   onTapUnclassified() {
-    wx.reLaunch({
+    wx.navigateTo({
       url: '/pages/index/index?projectId=__unclassified__&projectName=' + encodeURIComponent('未分类')
     })
   },
 
   // 从项目灵感流返回项目列表
   onBackToProjects() {
-    wx.reLaunch({ url: '/pages/index/index' })
+    wx.navigateBack()
   },
 
   // ============ 输入相关 ============
@@ -477,16 +477,27 @@ Page({
   // ============ 灵感卡片操作 ============
   onTapInspiration(e) {
     const item = e.detail.item
+    if (!item) return
+    const id = item.localId || item._id
+    if (!id) {
+      wx.showToast({ title: '数据异常，无法打开', icon: 'none' })
+      return
+    }
     wx.navigateTo({
-      url: '/pages/detail/detail?localId=' + item.localId
+      url: '/pages/detail/detail?localId=' + id
     })
   },
 
   onShareInspiration(e) {
     const item = e.detail.item
     if (!item) return
+    const id = item.localId || item._id
+    if (!id) {
+      wx.showToast({ title: '数据异常，无法分享', icon: 'none' })
+      return
+    }
     wx.navigateTo({
-      url: '/pages/detail/detail?localId=' + item.localId + '&openShare=1'
+      url: '/pages/detail/detail?localId=' + id + '&openShare=1'
     })
   },
 
@@ -564,7 +575,7 @@ Page({
 
           // 退出选择模式，跳转到新项目
           this.setData({ selectMode: false, selectedIds: [] })
-          wx.reLaunch({
+          wx.navigateTo({
             url: '/pages/index/index?projectId=' + projectId + '&projectName=' + encodeURIComponent(name)
           })
           wx.showToast({ title: '已创建项目「' + name + '」', icon: 'success' })

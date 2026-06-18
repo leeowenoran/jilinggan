@@ -94,8 +94,10 @@
 }
 .avatar-btn {
   position: relative;
-  width: 88rpx;
-  height: 88rpx;
+  width: 132rpx;
+  height: 132rpx;
+  min-width: 132rpx;
+  max-width: 132rpx;
   border-radius: 50%;
   overflow: hidden;
   padding: 0;
@@ -104,13 +106,14 @@
   background: transparent;
   flex-shrink: 0;
   line-height: 1;
+  box-sizing: border-box;
 }
 .avatar-btn::after {
   border: none;
 }
 .avatar-img {
-  width: 88rpx;
-  height: 88rpx;
+  width: 132rpx;
+  height: 132rpx;
   border-radius: 50%;
   background: #E5E7EB;
 }
@@ -120,8 +123,8 @@
   justify-content: center;
 }
 .avatar-placeholder-icon {
-  width: 44rpx;
-  height: 44rpx;
+  width: 66rpx;
+  height: 66rpx;
   background-color: #9CA3AF;
   background-repeat: no-repeat;
   background-position: center;
@@ -133,17 +136,17 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  right: 0;
-  height: 32rpx;
+  width: 132rpx;
+  height: 44rpx;
   background: rgba(0,0,0,0.35);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0 0 44rpx 44rpx;
+  border-radius: 0 0 66rpx 66rpx;
 }
 .avatar-camera {
-  width: 22rpx;
-  height: 22rpx;
+  width: 32rpx;
+  height: 32rpx;
   background-color: #FFFFFF;
   background-repeat: no-repeat;
   background-position: center;

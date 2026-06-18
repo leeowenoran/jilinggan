@@ -169,7 +169,7 @@
       </block>
       <block wx:else>
         <view class="back-btn" bindtap="onBackToProjects">
-          <text class="back-arrow">‹</text>
+          <view class="chevron-icon"></view>
           <text class="back-label">项目</text>
         </view>
         <text class="project-nav-title">{{currentProjectName}}</text>

@@ -343,7 +343,7 @@ function getSingleModeProjectId() {
   return wx.getStorageSync('__single_active_project__') || null
 }
 
-module.exports = {
+Object.assign(module.exports, {
   getInspirations,
   saveInspiration,
   updateInspiration,
@@ -380,4 +380,4 @@ module.exports = {
   migrateProjectColors,
   PROJECT_COLORS,
   KEYS
-}
+})

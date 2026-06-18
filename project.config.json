@@ -2,7 +2,12 @@
   "description": "记灵感 - 随时记录突发灵感",
   "cloudfunctionRoot": "cloudfunctions/",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "type": "folder",
+        "value": "cloudfunctions"
+      }
+    ],
     "include": []
   },
   "setting": {
@@ -45,7 +50,9 @@
     "useCompilerPlugins": false,
     "condition": true,
     "swc": false,
-    "disableSWC": true
+    "disableSWC": true,
+    "ignoreDevUnusedFiles": true,
+    "ignoreUploadUnusedFiles": true
   },
   "compileType": "miniprogram",
   "libVersion": "3.3.4",

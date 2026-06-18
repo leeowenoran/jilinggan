@@ -1,4 +1,14 @@
 /* pages/detail/detail.wxss */
+
+/* 隐藏的分享卡片 Canvas */
+.share-canvas {
+  position: fixed;
+  left: -9999rpx;
+  top: -9999rpx;
+  width: 750rpx;
+  height: 1400rpx;
+}
+
 .page {
   min-height: 100vh;
   background: #F5F5F5;
@@ -24,9 +34,19 @@
   justify-content: center;
 }
 .nav-back-icon {
-  font-size: 40rpx;
-  color: #007AFF;
-  font-weight: 300;
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chevron-icon {
+  width: 22rpx;
+  height: 22rpx;
+  border-left: 4rpx solid #007AFF;
+  border-bottom: 4rpx solid #007AFF;
+  transform: rotate(45deg);
+  margin-left: 10rpx;
 }
 .nav-title {
   font-size: 32rpx;

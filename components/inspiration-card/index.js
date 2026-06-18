@@ -35,7 +35,8 @@ Component({
 
   methods: {
     updateDisplayTime() {
-      const createdAt = this.data.item.createdAt
+      const item = this.properties.item
+      const createdAt = item.createdAt
       if (!createdAt) return
       const d = new Date(createdAt)
       const now = new Date()
@@ -110,11 +111,12 @@ Component({
 
     // ============ 吸收操作 ============
     onMarkAbsorbed() {
-      const absorbed = !this.data.item.absorbed
+      const item = this.properties.item
+      const absorbed = !item.absorbed
       wx.vibrateShort({ type: 'medium' })
       this.setData({ absorbSlideOpen: false })
       this.triggerEvent('absorb', {
-        item: this.data.item,
+        item: item,
         absorbed: absorbed
       })
     },
@@ -122,7 +124,7 @@ Component({
     // ============ 删除操作 ============
     onDelete() {
       wx.vibrateShort({ type: 'heavy' })
-      this.triggerEvent('delete', { item: this.data.item })
+      this.triggerEvent('delete', { item: this.properties.item })
     },
 
     // ============ 点击 ============
@@ -136,10 +138,10 @@ Component({
         return
       }
       if (this.properties.selectMode) {
-        this.triggerEvent('select', { item: this.data.item })
+        this.triggerEvent('select', { item: this.properties.item })
         return
       }
-      this.triggerEvent('tap', { item: this.data.item })
+      this.triggerEvent('tap', { item: this.properties.item })
     },
 
     onLongPress() {
@@ -178,7 +180,7 @@ Component({
     // ============ 图片预览 ============
     onPreviewImage(e) {
       const idx = e.currentTarget.dataset.index
-      const images = this.data.item.images || []
+      const images = this.properties.item.images || []
       if (images.length === 0) return
       wx.previewImage({
         current: images[idx] || images[0],

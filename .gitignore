@@ -1,0 +1,23 @@
+# 依赖
+node_modules/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 微信小程序 - 项目私有配置（含有个人 appid 等敏感信息）
+project.private.config.json
+
+# WorkBuddy 项目数据
+.workbuddy/
+
+# 自动化测试
+minitest/
+
+# IDE / 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

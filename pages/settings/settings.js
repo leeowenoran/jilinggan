@@ -100,11 +100,8 @@ Page({
         this.setData({ avatarUrl: uploadRes.fileID })
         const result = await sync.updateProfile({ avatarUrl: uploadRes.fileID })
         if (result.success) {
+          this.setData({ isNewUser: false })
           wx.showToast({ title: '头像已更新', icon: 'success' })
-          if (this.data.isNewUser) {
-            this._savingProfile = true
-            setTimeout(() => { wx.navigateBack() }, 800)
-          }
         } else {
           wx.showToast({ title: result.error || '更新失败', icon: 'none' })
         }
@@ -125,11 +122,7 @@ Page({
     const value = (e.detail.value || '').trim()
     if (!value) return
     this.setData({ nickName: value })
-    try {
-      this.saveNickName(value)
-    } catch (err) {
-      wx.showToast({ title: '保存失败，请重试', icon: 'none' })
-    }
+    this.saveNickName(value)
   },
 
   async onSaveProfile() {
@@ -138,34 +131,30 @@ Page({
       wx.showToast({ title: '昵称不能为空', icon: 'none' })
       return
     }
-    try {
-      await this.saveNickName(nickName)
-    } catch (err) {
-      wx.showToast({ title: '保存失败，请重试', icon: 'none' })
-    }
+    await this.saveNickName(nickName)
   },
 
   async saveNickName(nickName) {
-    wx.showLoading({ title: '保存中...' })
+    wx.showLoading({ title: '保存中...', mask: true })
+    let result
     try {
-      const result = await sync.updateProfile({ nickName })
-      wx.hideLoading()
-      if (result.success) {
-        const userInfo = storage.getUserInfo() || {}
-        userInfo.nickName = nickName
-        storage.saveUserInfo(userInfo)
-        this.setData({ nickName, isEditing: false })
-        wx.showToast({ title: '保存成功', icon: 'success' })
-        if (this.data.isNewUser) {
-          this._savingProfile = true
-          setTimeout(() => { wx.navigateBack() }, 800)
-        }
-      } else {
-        wx.showToast({ title: result.error || '网络异常，请确保已登录', icon: 'none', duration: 2000 })
+      result = await sync.updateProfile({ nickName })
+    } catch (_err) {
+      result = { success: false, error: '网络异常' }
+    }
+    wx.hideLoading()
+    if (result.success) {
+      const userInfo = storage.getUserInfo() || {}
+      userInfo.nickName = nickName
+      storage.saveUserInfo(userInfo)
+      this.setData({ nickName, isEditing: false })
+      wx.showToast({ title: '保存成功', icon: 'success' })
+      if (this.data.isNewUser) {
+        this._savingProfile = true
+        setTimeout(() => { wx.navigateBack() }, 800)
       }
-    } catch (err) {
-      wx.hideLoading()
-      wx.showToast({ title: '保存失败，请重试', icon: 'none' })
+    } else {
+      wx.showToast({ title: result.error || '网络异常，请确保已登录', icon: 'none', duration: 2000 })
     }
   },
 

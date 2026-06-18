@@ -15,19 +15,5 @@
   "style": "v2",
   "sitemapLocation": "sitemap.json",
   "lazyCodeLoading": "requiredComponents",
-  "cloud": true,
-  "tabBar": {
-    "color": "#9CA3AF",
-    "selectedColor": "#10B981",
-    "backgroundColor": "#FFFFFF",
-    "borderStyle": "white",
-    "list": [
-      {
-        "pagePath": "pages/index/index",
-        "text": "记灵感",
-        "iconPath": "images/tab-home.png",
-        "selectedIconPath": "images/tab-home-active.png"
-      }
-    ]
-  }
+  "cloud": true
 }

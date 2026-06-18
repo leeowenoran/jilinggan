@@ -1,9 +1,18 @@
 <!--pages/detail/detail.wxml-->
+<!-- 隐藏 Canvas，用于生成分享卡片（页面级，生命周期可靠） -->
+<canvas
+  type="2d"
+  id="shareCanvas"
+  class="share-canvas"
+></canvas>
+
 <view class="page">
   <!-- 顶部导航栏（标题 + 操作按钮） -->
   <view class="nav-bar">
     <view class="nav-back" bindtap="onBack">
-      <text class="nav-back-icon">&lt;</text>
+      <view class="nav-back-icon">
+        <view class="chevron-icon"></view>
+      </view>
     </view>
     <text class="nav-title">灵感详情</text>
     <view class="nav-actions">
@@ -100,10 +109,10 @@
           <text class="action-icon">{{item.absorbed ? '🔓' : '✅'}}</text>
           <text>{{item.absorbed ? '取消吸收' : '标记吸收'}}</text>
         </button>
-        <button class="action-btn" bindtap="onShare">
+        <view class="action-btn" bindtap="onShare">
           <text class="action-icon">📤</text>
           <text>分享</text>
-        </button>
+        </view>
         <button class="action-btn danger" bindtap="onDelete">
           <text class="action-icon">🗑️</text>
           <text>删除</text>
@@ -112,11 +121,16 @@
     </block>
   </view>
 
-  <!-- 分享菜单 -->
+  <!-- 分享菜单（纯展示，不含 Canvas） -->
   <share-menu
     wx:if="{{showShareMenu}}"
-    item="{{item}}"
+    card-image-path="{{shareCardPath}}"
+    is-generating="{{shareGenerating}}"
+    generate-error="{{shareError}}"
     bind:close="onCloseShareMenu"
     bind:cardready="onShareCardReady"
+    bind:retry="onRetryShareCard"
+    bind:save="onSaveShareCard"
+    bind:copytext="onCopyShareText"
   />
 </view>
