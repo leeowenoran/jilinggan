@@ -39,10 +39,13 @@ Component({
       // 获取小程序码
       const qrPromise = sync.getWxacode('pages/index/index', '').then(res => {
         if (res && res.code === 0 && res.data && res.data.base64) {
-          return res.data.base64
+          return res.data.base64  // 返回 base64 data URI
         }
         return null
-      }).catch(() => null)
+      }).catch((err) => {
+        console.warn('[share-menu] getWxacode failed:', err)
+        return null
+      })
 
       qrPromise.then(qrBase64 => {
         if (hasImages) {
@@ -57,18 +60,14 @@ Component({
 
     // 下载第一张图片
     _loadFirstImage(src, callback) {
-      // 如果是本地临时路径直接用
-      if (src && (src.startsWith('wxfile://') || src.startsWith('http://tmp/') || src.startsWith('/tmp/'))) {
-        const img = this.createCanvas ? null : null
-        callback(src)
+      if (!src) {
+        callback(null)
         return
       }
-      // cloud file ID 或 https 链接
-      if (src && (src.startsWith('cloud://') || src.startsWith('https://'))) {
-        wx.downloadFile({
-          url: src.startsWith('cloud://') ? undefined : src,
-          filePath: undefined,
-          cloudPath: src.startsWith('cloud://') ? src : undefined,
+      // cloud:// 文件，用 wx.cloud.downloadFile 下载
+      if (src.startsWith('cloud://')) {
+        wx.cloud.downloadFile({
+          fileID: src,
           success: (res) => {
             callback(res.tempFilePath)
           },
@@ -78,8 +77,21 @@ Component({
         })
         return
       }
-      // 其他情况直接用（临时路径）
-      callback(src || null)
+      // https:// 文件，用 wx.downloadFile 下载
+      if (src.startsWith('https://')) {
+        wx.downloadFile({
+          url: src,
+          success: (res) => {
+            callback(res.tempFilePath)
+          },
+          fail: () => {
+            callback(null)
+          }
+        })
+        return
+      }
+      // 临时文件路径，直接使用
+      callback(src)
     },
 
     // ============ 绘制 Canvas ============
@@ -153,9 +165,30 @@ Component({
     // 用 canvas.createImage 加载图片
     _loadCanvasImage(canvas, src) {
       return new Promise((resolve) => {
+        if (!src) {
+          resolve(null)
+          return
+        }
+        // 如果是 base64，先写入临时文件
+        if (src.startsWith('data:image')) {
+          const fsm = wx.getFileSystemManager()
+          const base64Data = src.split(',')[1] || src
+          try {
+            const filePath = `${wx.env.USER_DATA_PATH}/wxacode_${Date.now()}.png`
+            fsm.writeFileSync(filePath, base64Data, 'base64')
+            src = filePath
+          } catch (e) {
+            console.error('[share-menu] write base64 failed:', e)
+            resolve(null)
+            return
+          }
+        }
         const img = canvas.createImage()
         img.onload = () => resolve(img)
-        img.onerror = () => resolve(null)
+        img.onerror = () => {
+          console.error('[share-menu] image load failed:', src.substring(0, 50))
+          resolve(null)
+        }
         img.src = src
       })
     },

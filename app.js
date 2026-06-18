@@ -4,7 +4,7 @@ App({
     // 初始化云开发
     if (wx.cloud) {
       wx.cloud.init({
-        env: 'cloud1-d7g9wbsbd8be82c80',
+        env: 'cloud1-d8g48zkkz07b072bf',
         traceUser: true
       })
     }
@@ -30,7 +30,7 @@ App({
     lastDraftSave: 0,
 
     // 云开发
-    cloudEnv: 'cloud1-d7g9wbsbd8be82c80',
+    cloudEnv: 'cloud1-d8g48zkkz07b072bf',
     cloudAvailable: true,
 
     // 项目模式

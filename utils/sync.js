@@ -253,6 +253,13 @@ function getWxacode(page, scene) {
 }
 
 /**
+ * 图片安全检测 (checkImage)
+ */
+function checkImage(fileID) {
+  return call('checkImage', { fileID })
+}
+
+/**
  * 检查云环境是否可用
  */
 function checkCloudAvailable() {
@@ -278,5 +285,6 @@ module.exports = {
   getDetail,
   getAllTags,
   manageProject,
-  getWxacode
+  getWxacode,
+  checkImage
 }

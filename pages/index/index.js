@@ -320,6 +320,7 @@ Page({
     if (!content && images.length === 0) return
 
     // 实时内容安全检测（仅云可用时）
+    // 文本检测（同步）
     if (sync.checkCloudAvailable()) {
       wx.showLoading({ title: '检测中…', mask: true })
       try {
@@ -341,6 +342,11 @@ Page({
         console.warn('内容检测失败，继续保存:', e.message)
         // 检测接口出错不阻断用户 —— 云同步时 syncUpload 会再次检测
       }
+    }
+
+    // 图片检测（异步，不阻断用户操作）
+    if (sync.checkCloudAvailable() && images.length > 0) {
+      this._checkImagesAsync(images)
     }
 
     const localId = 'local_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8)
@@ -411,6 +417,33 @@ Page({
 
     // 定位功能已关闭（审核要求 wx.getLocation 权限，笔记类非刚需）
     // this._fetchLocation(localId)
+  },
+
+  // ============ 异步图片安全检测（不阻断用户操作）============
+  _checkImagesAsync(images) {
+    if (!sync.checkCloudAvailable() || !images || images.length === 0) return
+    // 上传第一张图片到云存储并检测（示例，实际可批量）
+    const firstImg = images[0]
+    if (!firstImg || !firstImg.tempFilePath) return
+    const tempPath = firstImg.tempFilePath
+    // 仅处理本地临时文件
+    if (tempPath.startsWith('wxfile://') || tempPath.startsWith('http://tmp/') || tempPath.startsWith('/tmp/')) {
+      const cloudPath = 'inspiration-img/' + Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '.jpg'
+      wx.cloud.uploadFile({
+        cloudPath: cloudPath,
+        filePath: tempPath,
+        success: (uploadRes) => {
+          // 检测图片
+          sync.checkImage(uploadRes.fileID).then(checkRes => {
+            if (checkRes && checkRes.safe === false) {
+              wx.showToast({ title: '图片未通过安全检测', icon: 'none' })
+              // 标记该灵感为违规（可选）
+            }
+          }).catch(() => {})
+        },
+        fail: () => {}
+      })
+    }
   },
 
   // _fetchLocation / _saveLocation 已禁用 — 记灵感无需自动标记位置
@@ -674,16 +707,16 @@ Page({
 
   goToSettingsForProfile() {
     getApp().globalData.pendingSettingsFlag = 'newUser'
-    wx.switchTab({ url: '/pages/settings/settings' })
+    wx.navigateTo({ url: '/pages/settings/settings' })
   },
 
   // ============ 导航 ============
   onGoSettings() {
-    wx.switchTab({ url: '/pages/settings/settings' })
+    wx.navigateTo({ url: '/pages/settings/settings' })
   },
 
   onGoSearch() {
-    wx.switchTab({ url: '/pages/search/search' })
+    wx.navigateTo({ url: '/pages/search/search' })
   },
 
   // ============ 新建项目（多项目首页快捷入口）============

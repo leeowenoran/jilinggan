@@ -103,7 +103,7 @@ Page({
           wx.showToast({ title: '头像已更新', icon: 'success' })
           if (this.data.isNewUser) {
             this._savingProfile = true
-            setTimeout(() => { wx.switchTab({ url: '/pages/index/index' }) }, 800)
+            setTimeout(() => { wx.navigateBack() }, 800)
           }
         } else {
           wx.showToast({ title: result.error || '更新失败', icon: 'none' })
