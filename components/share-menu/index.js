@@ -1,4 +1,5 @@
 // components/share-menu/index.js
+const sync = require('../../utils/sync')
 Component({
   properties: {
     item: {
@@ -35,14 +36,23 @@ Component({
 
       const hasImages = item.images && item.images.length > 0
 
-      if (hasImages) {
-        // 先下载第一张图片，再绘制
-        this._loadFirstImage(item.images[0], (imgObj) => {
-          this._drawWithCanvas(item, imgObj)
-        })
-      } else {
-        this._drawWithCanvas(item, null)
-      }
+      // 获取小程序码
+      const qrPromise = sync.getWxacode('pages/index/index', '').then(res => {
+        if (res && res.code === 0 && res.data && res.data.base64) {
+          return res.data.base64
+        }
+        return null
+      }).catch(() => null)
+
+      qrPromise.then(qrBase64 => {
+        if (hasImages) {
+          this._loadFirstImage(item.images[0], (imgObj) => {
+            this._drawWithCanvas(item, imgObj, qrBase64)
+          })
+        } else {
+          this._drawWithCanvas(item, null, qrBase64)
+        }
+      })
     },
 
     // 下载第一张图片
@@ -73,7 +83,7 @@ Component({
     },
 
     // ============ 绘制 Canvas ============
-    _drawWithCanvas(item, localImagePath) {
+    _drawWithCanvas(item, localImagePath, qrBase64) {
       const query = this.createSelectorQuery()
       query.select('#shareCanvas')
         .fields({ node: true, size: true })
@@ -98,13 +108,18 @@ Component({
           ctx.scale(dpr, dpr)
 
           try {
-            // 如有图片先 createImage 加载
+            // 加载图片缩略图
             let imgObj = null
             if (localImagePath) {
               imgObj = await this._loadCanvasImage(canvas, localImagePath)
             }
+            // 加载小程序码图片
+            let qrImg = null
+            if (qrBase64) {
+              qrImg = await this._loadCanvasImage(canvas, qrBase64)
+            }
 
-            this._drawCard(ctx, canvas, item, W, H, imgObj)
+            this._drawCard(ctx, canvas, item, W, H, imgObj, qrImg)
 
             wx.canvasToTempFilePath({
               canvas,
@@ -165,7 +180,7 @@ Component({
     },
 
     // ============ 精美卡片绘制 ============
-    _drawCard(ctx, canvas, item, W, H, imgObj) {
+    _drawCard(ctx, canvas, item, W, H, imgObj, qrImg) {
       const P = 48 // 左右内边距
 
       // ========== 背景 ==========
@@ -352,7 +367,6 @@ Component({
       y += 48
 
       // ========== 二维码区域 ==========
-      // 绘制一个精致的二维码占位框（实际小程序码由用户长按图片时微信自动识别）
       const qrSize = 100
       const qrX = W - P - qrSize
       const qrY = y
@@ -366,8 +380,13 @@ Component({
       this._roundRect(ctx, qrX - 8, qrY - 8, qrSize + 16, qrSize + 16, 12)
       ctx.stroke()
 
-      // 绘制模拟二维码图案（9×9 点阵 QR 风格）
-      this._drawQRPlaceholder(ctx, qrX, qrY, qrSize)
+      if (qrImg) {
+        // 使用真实小程序码
+        ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize)
+      } else {
+        // 绘制模拟二维码图案（兜底）
+        this._drawQRPlaceholder(ctx, qrX, qrY, qrSize)
+      }
 
       // 二维码下方说明文字
       ctx.fillStyle = '#9CA3AF'

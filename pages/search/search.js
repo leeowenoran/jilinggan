@@ -1,5 +1,6 @@
 // pages/search/search.js
 const storage = require('../../utils/storage')
+const sync = require('../../utils/sync')
 
 Page({
   data: {
@@ -21,14 +22,33 @@ Page({
 
   // 加载所有标签
   loadAllTags() {
-    const list = storage.getInspirations()
-    const tagSet = new Set()
-    list.forEach(item => {
-      if (!item.isDeleted && item.tags) {
-        item.tags.forEach(t => tagSet.add(t))
+    // 优先从云端获取标签统计
+    sync.getAllTags().then(res => {
+      if (res && res.code === 0 && res.data && res.data.tags) {
+        const cloudTags = res.data.tags.map(t => t.name)
+        this.setData({ allTags: cloudTags })
+        return
       }
+      // 回退本地
+      const list = storage.getInspirations()
+      const tagSet = new Set()
+      list.forEach(item => {
+        if (!item.isDeleted && item.tags) {
+          item.tags.forEach(t => tagSet.add(t))
+        }
+      })
+      this.setData({ allTags: Array.from(tagSet) })
+    }).catch(() => {
+      // 回退本地
+      const list = storage.getInspirations()
+      const tagSet = new Set()
+      list.forEach(item => {
+        if (!item.isDeleted && item.tags) {
+          item.tags.forEach(t => tagSet.add(t))
+        }
+      })
+      this.setData({ allTags: Array.from(tagSet) })
     })
-    this.setData({ allTags: Array.from(tagSet) })
   },
 
   // 搜索输入
@@ -47,22 +67,37 @@ Page({
 
   // 执行搜索
   doSearch(keyword) {
-    const list = storage.getInspirations()
     const kw = keyword.toLowerCase()
+    // 优先云端搜索
+    sync.searchInspirations({ keyword: kw }).then(res => {
+      if (res && res.code === 0 && res.data && Array.isArray(res.data.list)) {
+        const allProjects = storage.getProjects()
+        const projectMap = {}
+        allProjects.forEach(p => { projectMap[p._id] = p.name })
+        const results = res.data.list.map(item => ({
+          ...item,
+          _projectName: item.projectId ? (projectMap[item.projectId] || '') : ''
+        }))
+        this.setData({ results })
+        return
+      }
+      // 回退本地搜索
+      this._localSearch(kw)
+    }).catch(() => {
+      this._localSearch(kw)
+    })
+  },
 
-    // 构建项目名映射
+  _localSearch(kw) {
+    const list = storage.getInspirations()
     const allProjects = storage.getProjects()
     const projectMap = {}
     allProjects.forEach(p => { projectMap[p._id] = p.name })
-
     const results = list
       .filter(item => {
         if (item.isDeleted) return false
-        // 搜索正文
         if (item.content && item.content.toLowerCase().includes(kw)) return true
-        // 搜索补充内容
         if (item.supplement && item.supplement.toLowerCase().includes(kw)) return true
-        // 搜索标签
         if (item.tags && item.tags.some(t => t.toLowerCase().includes(kw))) return true
         return false
       })
@@ -71,7 +106,6 @@ Page({
         _projectName: item.projectId ? (projectMap[item.projectId] || '') : ''
       }))
       .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
-
     this.setData({ results })
   },
 

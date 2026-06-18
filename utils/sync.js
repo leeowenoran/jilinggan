@@ -159,6 +159,100 @@ function syncDownload() {
 }
 
 /**
+ * 通用云函数调用封装
+ */
+function call(name, data) {
+  return new Promise((resolve, reject) => {
+    if (!checkCloudAvailable()) {
+      resolve({ code: -1, message: '云环境未初始化', offline: true })
+      return
+    }
+    wx.cloud.callFunction({
+      name,
+      data,
+      success: (res) => resolve(res.result || { code: -1, message: '未知错误' }),
+      fail: (err) => reject(err)
+    })
+  })
+}
+
+/**
+ * 创建灵感 (inspirationCreate)
+ */
+function createInspiration(item) {
+  return call('inspirationCreate', {
+    localId: item.localId,
+    content: item.content,
+    tags: item.tags || [],
+    timeSlot: item.timeSlot || '',
+    source: item.source || 'text',
+    voiceFileId: item.voiceFileId || '',
+    projectId: item.projectId || ''
+  })
+}
+
+/**
+ * 获取灵感列表 (inspirationList)
+ */
+function listInspirations(page = 1, pageSize = 20) {
+  return call('inspirationList', { page, pageSize })
+}
+
+/**
+ * 搜索灵感 (inspirationSearch)
+ */
+function searchInspirations(opts = {}) {
+  return call('inspirationSearch', {
+    keyword: opts.keyword || '',
+    tag: opts.tag || '',
+    page: opts.page || 1,
+    pageSize: opts.pageSize || 20
+  })
+}
+
+/**
+ * 删除灵感 (inspirationDelete)
+ */
+function removeInspiration(localId, hardDelete) {
+  return call('inspirationDelete', { localId, hardDelete: !!hardDelete })
+}
+
+/**
+ * 补充灵感 (inspirationSupplement)
+ */
+function supplementInspiration(localId, supplement) {
+  return call('inspirationSupplement', { localId, supplement })
+}
+
+/**
+ * 灵感详情 (inspirationDetail)
+ */
+function getDetail(localId) {
+  return call('inspirationDetail', { localId })
+}
+
+/**
+ * 标签统计 (inspirationTags)
+ */
+function getAllTags() {
+  return call('inspirationTags', {})
+}
+
+/**
+ * 项目管理 (projectManage)
+ */
+function manageProject(action, data) {
+  return call('projectManage', { action, ...data })
+}
+
+/**
+ * 获取小程序码 (getWxacode)
+ */
+function getWxacode(page, scene) {
+  return call('getWxacode', { page: page || 'pages/index/index', scene: scene || '' })
+}
+
+/**
  * 检查云环境是否可用
  */
 function checkCloudAvailable() {
@@ -174,5 +268,15 @@ module.exports = {
   updateProfile,
   syncUpload,
   syncDownload,
-  checkCloudAvailable
+  checkCloudAvailable,
+  call,
+  createInspiration,
+  listInspirations,
+  searchInspirations,
+  removeInspiration,
+  supplementInspiration,
+  getDetail,
+  getAllTags,
+  manageProject,
+  getWxacode
 }

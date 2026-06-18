@@ -1,5 +1,7 @@
 // utils/storage.js
-// 本地存储工具
+// 本地存储工具（云端优先 + 本地缓存）
+
+const sync = require('./sync')
 
 const KEYS = {
   INSPIRATIONS: 'inspirations',
@@ -68,6 +70,19 @@ function saveInspiration(item) {
   list.unshift(item)
   wx.setStorageSync(KEYS.INSPIRATIONS, list)
   addToSyncQueue(item.localId)
+  // 云端同步创建
+  sync.createInspiration(item).then(res => {
+    if (res && res.code === 0 && res.data && res.data._id) {
+      const freshList = getInspirations()
+      const idx = freshList.findIndex(i => i.localId === item.localId)
+      if (idx > -1) {
+        freshList[idx].cloudId = res.data._id
+        freshList[idx].synced = true
+        wx.setStorageSync(KEYS.INSPIRATIONS, freshList)
+        removeFromSyncQueue(item.localId)
+      }
+    }
+  }).catch(() => {})
   return list
 }
 
@@ -78,6 +93,8 @@ function updateInspiration(localId, updates) {
   list[idx] = { ...list[idx], ...updates, updatedAt: new Date().toISOString() }
   if (updates.supplement !== undefined) {
     list[idx].version = (list[idx].version || 1) + 1
+    // 云端同步补充
+    sync.supplementInspiration(localId, updates.supplement).catch(() => {})
   }
   wx.setStorageSync(KEYS.INSPIRATIONS, list)
   addToSyncQueue(localId)
@@ -92,6 +109,8 @@ function deleteInspiration(localId) {
   list[idx].synced = false
   wx.setStorageSync(KEYS.INSPIRATIONS, list)
   addToSyncQueue(localId)
+  // 云端同步删除
+  sync.removeInspiration(localId).catch(() => {})
   return true
 }
 
@@ -193,6 +212,12 @@ function saveProject(project) {
   const list = getProjects()
   list.push(project)
   wx.setStorageSync(KEYS.PROJECTS, list)
+  // 云端同步创建
+  sync.manageProject('create', {
+    localId: project._id,
+    name: project.name,
+    color: project.color
+  }).catch(() => {})
   return list
 }
 
@@ -202,6 +227,11 @@ function updateProject(projectId, updates) {
   if (idx === -1) return null
   list[idx] = { ...list[idx], ...updates, updatedAt: new Date().toISOString() }
   wx.setStorageSync(KEYS.PROJECTS, list)
+  // 云端同步更新
+  sync.manageProject('update', {
+    localId: projectId,
+    name: updates.name
+  }).catch(() => {})
   return list[idx]
 }
 
@@ -209,7 +239,8 @@ function deleteProject(projectId) {
   const list = getProjects()
   const filtered = list.filter(p => p._id !== projectId)
   wx.setStorageSync(KEYS.PROJECTS, filtered)
-  // 关联的灵感不删除，projectId 变成孤儿（可在设置页清理）
+  // 云端同步删除
+  sync.manageProject('delete', { localId: projectId }).catch(() => {})
   return filtered
 }
 

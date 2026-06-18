@@ -378,6 +378,14 @@ Page({
     }
 
     storage.saveInspiration(item)
+    // 云函数直接创建（saveInspiration 内部已异步调用 inspirationCreate）
+    if (sync.checkCloudAvailable()) {
+      sync.createInspiration(item).then(res => {
+        if (res && res.code === 0 && res.data) {
+          storage.updateInspiration(localId, { cloudId: res.data._id, synced: true })
+        }
+      }).catch(() => {})
+    }
 
     // 取消未触发的草稿定时器，防止 clearDraft 后又被定时器写回旧值
     if (this._draftTimer) {

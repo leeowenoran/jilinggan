@@ -1,5 +1,6 @@
 // pages/detail/detail.js
 const storage = require('../../utils/storage')
+const sync = require('../../utils/sync')
 
 Page({
   data: {
@@ -51,6 +52,20 @@ Page({
       setTimeout(() => wx.navigateBack(), 1000)
       return
     }
+    this._renderItem(item)
+    // 后台从云端拉取最新详情
+    sync.getDetail(this.data.localId).then(res => {
+      if (res && res.code === 0 && res.data && res.data.item) {
+        const cloudItem = res.data.item
+        // 合并云端数据（云端可能有更新的补充内容等）
+        const merged = { ...item, ...cloudItem, _projectName: item._projectName }
+        storage.updateInspiration(this.data.localId, cloudItem)
+        this._renderItem(merged)
+      }
+    }).catch(() => {})
+  },
+
+  _renderItem(item) {
 
     // 格式化时间
     const createdAt = new Date(item.createdAt)
