@@ -1,5 +1,5 @@
 <!--components/share-menu/index.wxml-->
-<!-- 隐藏的 Canvas，用于生成分享卡片 -->
+<!-- 隐藏的 Canvas，用于生成分享卡片（尺寸需足够大，js 中会动态调整） -->
 <canvas
   type="2d"
   id="shareCanvas"
@@ -10,39 +10,51 @@
   <view class="sheet" catchtap="onStopPropagation">
     <!-- 头部 -->
     <view class="sheet-header">
-      <text class="sheet-title">分享灵感</text>
-      <text class="sheet-close" bindtap="onClose">取消</text>
+      <view class="sheet-title-area">
+        <text class="sheet-title">分享灵感</text>
+        <text class="sheet-subtitle">长按图片可直接分享</text>
+      </view>
+      <text class="sheet-close" bindtap="onClose">✕</text>
     </view>
 
     <!-- 卡片预览区 -->
     <view class="card-preview">
       <image
-        wx:if="{{cardImagePath}}"
+        wx:if="{{cardImagePath && !isGenerating}}"
         class="card-image"
         src="{{cardImagePath}}"
         mode="widthFix"
         show-menu-by-longpress="{{true}}"
       />
-      <view wx:else class="card-loading">
+      <view wx:elif="{{isGenerating}}" class="card-loading">
         <view class="loading-spinner"></view>
         <text class="loading-text">正在生成卡片...</text>
+      </view>
+      <view wx:else class="card-error">
+        <text class="error-icon">⚠</text>
+        <text class="error-text">生成失败</text>
+        <text class="retry-link" bindtap="onRetry">重试</text>
       </view>
     </view>
 
     <!-- 操作按钮 -->
     <view class="sheet-actions">
-      <button class="action-btn" bindtap="onSaveToAlbum" disabled="{{!cardImagePath}}">
+      <button class="action-btn primary" bindtap="onSaveToAlbum" disabled="{{!cardImagePath || isGenerating}}">
         <view class="action-icon icon-save"></view>
         <text class="action-label">保存到相册</text>
       </button>
       <button class="action-btn" open-type="share">
         <view class="action-icon icon-wechat"></view>
-        <text class="action-label">发送给朋友</text>
+        <text class="action-label">发给朋友</text>
       </button>
       <button class="action-btn" bindtap="onCopyText">
         <view class="action-icon icon-copy"></view>
         <text class="action-label">复制文案</text>
       </button>
+    </view>
+
+    <view class="sheet-tip">
+      <text class="tip-text">💡 保存后长按图片，可通过微信分享给好友</text>
     </view>
   </view>
 </view>

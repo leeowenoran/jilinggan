@@ -43,15 +43,6 @@
       </view>
     </view>
 
-    <!-- 未登录时的状态 -->
-    <view class="cell" wx:if="{{!isLoggedIn}}">
-      <text class="cell-label">登录状态</text>
-      <text class="cell-value not-logged-in">未登录</text>
-    </view>
-    <view class="cell" wx:if="{{isLoggedIn}}">
-      <text class="cell-label">登录状态</text>
-      <text class="cell-value logged-in">已登录</text>
-    </view>
     <button wx:if="{{!isLoggedIn}}" class="btn-login" bindtap="onLogin">微信登录</button>
     <button wx:if="{{isLoggedIn}}" class="btn-logout" bindtap="onLogout">退出登录</button>
   </view>
@@ -65,12 +56,8 @@
       <switch
         checked="{{switchChecked}}"
         bindchange="onToggleProjectMode"
-        color="#007AFF"
+        color="#10B981"
       />
-    </view>
-
-    <view class="cell-hint-tip" wx:if="{{projectMode === 'multi'}}">
-      <text class="cell-hint-tip-text">在首页长按项目卡片即可重命名或删除项目</text>
     </view>
   </view>
 

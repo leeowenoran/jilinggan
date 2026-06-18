@@ -18,6 +18,7 @@ Page({
   },
 
   onLoad(options) {
+    // 处理 navigateTo 遗留的 query 参数（兼容旧版）
     if (options && options.newUser === '1') {
       this.setData({ isNewUser: true })
       setTimeout(() => {
@@ -28,6 +29,14 @@ Page({
   },
 
   onShow() {
+    // 检查 switchTab 带来的标记
+    if (app.globalData.pendingSettingsFlag === 'newUser') {
+      app.globalData.pendingSettingsFlag = null
+      this.setData({ isNewUser: true })
+      setTimeout(() => {
+        this.setData({ focusNickInput: true })
+      }, 500)
+    }
     if (this._savingProfile) {
       this._savingProfile = false
       return
@@ -94,7 +103,7 @@ Page({
           wx.showToast({ title: '头像已更新', icon: 'success' })
           if (this.data.isNewUser) {
             this._savingProfile = true
-            setTimeout(() => { wx.navigateBack() }, 800)
+            setTimeout(() => { wx.switchTab({ url: '/pages/index/index' }) }, 800)
           }
         } else {
           wx.showToast({ title: result.error || '更新失败', icon: 'none' })

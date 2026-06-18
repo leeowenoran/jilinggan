@@ -231,25 +231,25 @@ Page({
   onTapProject(e) {
     const project = e.detail.project
     if (project._id === '__unclassified__') {
-      wx.navigateTo({
+      wx.reLaunch({
         url: '/pages/index/index?projectId=__unclassified__&projectName=' + encodeURIComponent('未分类')
       })
       return
     }
-    wx.navigateTo({
+    wx.reLaunch({
       url: '/pages/index/index?projectId=' + project._id + '&projectName=' + encodeURIComponent(project.name)
     })
   },
 
   onTapUnclassified() {
-    wx.navigateTo({
+    wx.reLaunch({
       url: '/pages/index/index?projectId=__unclassified__&projectName=' + encodeURIComponent('未分类')
     })
   },
 
   // 从项目灵感流返回项目列表
   onBackToProjects() {
-    wx.navigateBack()
+    wx.reLaunch({ url: '/pages/index/index' })
   },
 
   // ============ 输入相关 ============
@@ -323,7 +323,14 @@ Page({
     if (sync.checkCloudAvailable()) {
       wx.showLoading({ title: '检测中…', mask: true })
       try {
-        const checkRes = await sync.callCloud('checkText', { content })
+        const checkRes = await new Promise((resolve, reject) => {
+          wx.cloud.callFunction({
+            name: 'checkText',
+            data: { content },
+            success: (res) => resolve(res.result),
+            fail: (err) => reject(err)
+          })
+        })
         wx.hideLoading()
         if (checkRes && checkRes.safe === false) {
           wx.showToast({ title: '内容未通过安全检测，请修改', icon: 'none' })
@@ -516,7 +523,7 @@ Page({
 
           // 退出选择模式，跳转到新项目
           this.setData({ selectMode: false, selectedIds: [] })
-          wx.navigateTo({
+          wx.reLaunch({
             url: '/pages/index/index?projectId=' + projectId + '&projectName=' + encodeURIComponent(name)
           })
           wx.showToast({ title: '已创建项目「' + name + '」', icon: 'success' })
@@ -658,16 +665,17 @@ Page({
   },
 
   goToSettingsForProfile() {
-    wx.navigateTo({ url: '/pages/settings/settings?newUser=1' })
+    getApp().globalData.pendingSettingsFlag = 'newUser'
+    wx.switchTab({ url: '/pages/settings/settings' })
   },
 
   // ============ 导航 ============
   onGoSettings() {
-    wx.navigateTo({ url: '/pages/settings/settings' })
+    wx.switchTab({ url: '/pages/settings/settings' })
   },
 
   onGoSearch() {
-    wx.navigateTo({ url: '/pages/search/search' })
+    wx.switchTab({ url: '/pages/search/search' })
   },
 
   // ============ 新建项目（多项目首页快捷入口）============
